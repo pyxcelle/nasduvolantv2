@@ -1,11 +1,11 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "tanstack-start-app",
+  "name": "nasduvolantv2",
   "compatibility_date": "2025-09-24",
   "compatibility_flags": ["nodejs_compat"],
-  "main": "src/server.ts",
-  // Variable d'environnement à configurer via :
-  //   wrangler secret put GOOGLE_PLACES_API_KEY
-  // ou dans le dashboard Cloudflare Workers > Settings > Variables
-  // (ne jamais committer la clé dans ce fichier)
+  "main": "dist/server/server.js",
+  "no_bundle": true,
+  "assets": {
+    "directory": "./dist/client"
+  }
 }
