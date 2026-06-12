@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Heart, Users, Award, ArrowRight } from "lucide-react";
-import lesson from "@/assets/lesson.jpg";
+
 
 export const Route = createFileRoute("/a-propos")({
   head: () => ({
@@ -31,7 +31,7 @@ function APropos() {
             </p>
           </div>
           <div className="relative">
-            <img src={lesson} alt="Équipe N'as du Volant" loading="lazy" width={1400} height={1000} className="rounded-3xl shadow-card" />
+            <img src="/images/lesson.jpg" alt="Équipe N'as du Volant" loading="lazy" width={1400} height={1000} className="rounded-3xl shadow-card" />
           </div>
         </div>
       </section>

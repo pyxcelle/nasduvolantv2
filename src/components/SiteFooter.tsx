@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { MapPin, Phone, Clock, Mail } from "lucide-react";
-import logo from "@/assets/logo-nas-du-volant.jpg";
+
 
 export function SiteFooter() {
   return (
@@ -9,7 +9,7 @@ export function SiteFooter() {
       <div className="mx-auto max-w-7xl px-6 lg:px-10 py-20 grid gap-12 lg:grid-cols-4">
         <div className="lg:col-span-2">
           <div className="flex items-center gap-3">
-            <img src={logo} alt="N'as du Volant" width={64} height={64} className="h-14 w-auto rounded-md" />
+            <img src="/images/logo-nas-du-volant.jpg" alt="N'as du Volant" width={64} height={64} className="h-14 w-auto rounded-md" />
             <div>
               <div className="font-display italic text-2xl">N'as du Volant</div>
               <div className="text-[10px] tracking-[0.3em] text-muted-foreground uppercase mt-1">Auto-école · Bron 69500</div>

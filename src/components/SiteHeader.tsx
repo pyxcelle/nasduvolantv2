@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Phone, X } from "lucide-react";
 import { useState, useEffect } from "react";
-import logo from "@/assets/logo-nas-du-volant.jpg";
+
 
 const nav = [
   { label: "Formations", to: "/formations" },
@@ -29,7 +29,7 @@ export function SiteHeader() {
       <header className="sticky top-0 z-50 border-b border-border/40 bg-background/90 backdrop-blur-xl">
         <div className="mx-auto max-w-7xl px-6 lg:px-10 flex h-16 items-center justify-between gap-8">
           <Link to="/" className="flex items-center gap-3 shrink-0" onClick={() => setOpen(false)}>
-            <img src={logo} alt="N'as du Volant" width={40} height={40} className="h-9 w-auto rounded-md" />
+            <img src="/images/logo-nas-du-volant.jpg" alt="N'as du Volant" width={40} height={40} className="h-9 w-auto rounded-md" />
             <span className="font-display italic text-xl hidden sm:block">N'as du Volant</span>
           </Link>
 
