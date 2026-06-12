@@ -1,16 +1,19 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Star, ArrowRight, ExternalLink } from "lucide-react";
-import { fetchGooglePlacesData } from "@/lib/googlePlaces";
+import { Star, ArrowRight, ExternalLink, PenLine } from "lucide-react";
+import { useState, useEffect } from "react";
 
-// URLs Google Places avec le Place ID officiel
-const GOOGLE_REVIEWS_URL = "https://search.google.com/local/reviews?placeid=ChIJF2sXKTjB9EcR6ty4qnkxDlw";
-const GOOGLE_WRITE_REVIEW_URL = "https://search.google.com/local/writereview?placeid=ChIJF2sXKTjB9EcR6ty4qnkxDlw";
+interface GoogleRating { rating: string; count: number; mapsUrl: string; reviewUrl: string; }
+
+function useGoogleRating() {
+  const [data, setData] = useState<GoogleRating | null>(null);
+  useEffect(() => {
+    fetch("/api/google-rating").then(r => r.json()).then(setData).catch(() => {});
+  }, []);
+  return data;
+}
+
 
 export const Route = createFileRoute("/avis")({
-  loader: async () => {
-    const placesData = await fetchGooglePlacesData();
-    return { placesData };
-  },
   head: () => ({
     meta: [
       { title: "Avis Google — N'as du Volant Bron" },
@@ -29,10 +32,20 @@ const temoignages = [
   { n: "Théo V.", note: 5, date: "Octobre 2024", t: "Agence au top du début à la fin. Inscription simple, suivi régulier et examen passé sereinement. Merci !" },
 ];
 
+// Fallback si l'API n'est pas encore configurée
+const PLACE_ID = "ChIJF2sXKTjB9EcR6ty4qnkxDlw";
+const FALLBACK_REVIEW_URL = `https://search.google.com/local/writereview?placeid=${PLACE_ID}`;
+const FALLBACK_MAPS_URL = `https://www.google.com/maps/place/?q=place_id:${PLACE_ID}`;
+
 function Avis() {
-  const { placesData } = Route.useLoaderData();
-  const ratingDisplay = placesData.rating.toFixed(1).replace(".", ",") + " / 5";
-  const reviewsDisplay = placesData.userRatingsTotal.toLocaleString("fr-FR");
+  const googleRating = useGoogleRating();
+
+
+
+  const reviewUrl = googleRating?.reviewUrl ?? FALLBACK_REVIEW_URL;
+  const mapsUrl = googleRating?.mapsUrl ?? FALLBACK_MAPS_URL;
+  const rating = googleRating?.rating ?? "4,9";
+  const count = googleRating?.count ?? 233;
 
   return (
     <>
@@ -47,7 +60,7 @@ function Avis() {
           </p>
           <div className="mt-8 flex flex-wrap gap-4">
             <a
-              href={GOOGLE_REVIEWS_URL}
+              href={mapsUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-full bg-primary px-7 py-4 text-sm font-medium text-primary-foreground shadow-red hover:opacity-90 transition-all"
@@ -55,12 +68,12 @@ function Avis() {
               Voir tous nos avis Google <ExternalLink className="h-4 w-4" />
             </a>
             <a
-              href={GOOGLE_WRITE_REVIEW_URL}
+              href={reviewUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-full border border-border px-7 py-4 text-sm font-medium hover:bg-secondary transition-colors"
             >
-              Laisser un avis <ArrowRight className="h-4 w-4" />
+              Laisser un avis <PenLine className="h-4 w-4" />
             </a>
           </div>
         </div>
@@ -83,22 +96,38 @@ function Avis() {
             ))}
           </div>
 
+          {/* Bloc note en temps réel + CTA laisser un avis */}
           <div className="mt-16 rounded-3xl border border-primary/30 bg-primary/5 p-10 text-center">
-            <div className="font-display text-5xl text-primary">{ratingDisplay}</div>
-            <div className="mt-2 text-sm text-muted-foreground">
-              Note moyenne · {reviewsDisplay} avis Google
+            <div className="flex items-center justify-center gap-2 mb-1">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} className="h-5 w-5 fill-primary text-primary" />
+              ))}
+            </div>
+            <div className="font-display text-5xl text-primary">{rating} <span className="text-2xl text-muted-foreground font-sans font-normal">/ 5</span></div>
+            <div className="mt-1 text-sm text-muted-foreground">
+              Basé sur <span className="font-medium text-foreground">{count}</span> avis Google
             </div>
             <p className="mt-6 max-w-lg mx-auto text-muted-foreground leading-relaxed text-sm">
               Vous avez obtenu votre permis chez N'as du Volant ? Partagez votre expérience sur Google et aidez les futurs élèves à faire leur choix.
             </p>
-            <a
-              href={GOOGLE_WRITE_REVIEW_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-6 inline-flex items-center gap-2 rounded-full bg-primary px-7 py-4 text-sm font-medium text-primary-foreground shadow-red hover:opacity-90 transition-all"
-            >
-              Laisser mon avis Google <ExternalLink className="h-4 w-4" />
-            </a>
+            <div className="mt-6 flex flex-wrap justify-center gap-4">
+              <a
+                href={reviewUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-full bg-primary px-7 py-4 text-sm font-medium text-primary-foreground shadow-red hover:opacity-90 transition-all"
+              >
+                Laisser mon avis Google <PenLine className="h-4 w-4" />
+              </a>
+              <a
+                href={mapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-full border border-border px-7 py-4 text-sm font-medium hover:bg-secondary transition-colors"
+              >
+                Voir sur Google Maps <ArrowRight className="h-4 w-4" />
+              </a>
+            </div>
           </div>
         </div>
       </section>

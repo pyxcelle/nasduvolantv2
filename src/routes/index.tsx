@@ -1,6 +1,19 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Car, BookOpen, GraduationCap, Sparkles, CheckCircle2, Star } from "lucide-react";
-import { useGoogleRating } from "@/hooks/use-google-rating";
+import { useState, useEffect } from "react";
+
+const PLACE_ID = "ChIJF2sXKTjB9EcR6ty4qnkxDlw";
+
+interface GoogleRating { rating: string; count: number; mapsUrl: string; reviewUrl: string; }
+
+function useGoogleRating() {
+  const [data, setData] = useState<GoogleRating | null>(null);
+  useEffect(() => {
+    fetch("/api/google-rating").then(r => r.json()).then(setData).catch(() => {});
+  }, []);
+  return data;
+}
+
 
 
 
@@ -19,9 +32,7 @@ export const Route = createFileRoute("/")({
 });
 
 function Home() {
-  const { data: googleRating } = useGoogleRating();
-
-  return (
+  const googleRating = useGoogleRating();
     <>
       {/* HERO */}
       <section className="relative overflow-hidden bg-gradient-hero">
@@ -54,7 +65,7 @@ function Home() {
             <div className="mt-16 grid grid-cols-2 gap-8 max-w-sm">
               {[
                 { v: googleRating ? `${googleRating.rating}/5` : "4,9/5", l: "Note Google" },
-                { v: googleRating ? String(googleRating.count) : "233", l: "Avis Google" },
+                { v: googleRating ? String(googleRating.count) : "233+", l: "Avis Google" },
               ].map((s) => (
                 <div key={s.l}>
                   <div className="font-display text-3xl lg:text-4xl text-primary">{s.v}</div>
@@ -188,7 +199,7 @@ function Home() {
           </div>
           <div className="mt-10 text-center">
             <a
-              href={googleRating?.mapsUrl ?? "https://www.google.com/maps/place/?q=place_id:ChIJF2sXKTjB9EcR6ty4qnkxDlw"}
+              href={googleRating?.mapsUrl ?? `https://www.google.com/maps/place/?q=place_id:${PLACE_ID}`}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 text-sm text-primary hover:underline"
