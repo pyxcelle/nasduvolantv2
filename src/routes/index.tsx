@@ -33,6 +33,7 @@ export const Route = createFileRoute("/")({
 
 function Home() {
   const googleRating = useGoogleRating();
+  return (
     <>
       {/* HERO */}
       <section className="relative overflow-hidden bg-gradient-hero">
